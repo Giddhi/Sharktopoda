@@ -1,0 +1,215 @@
+
+# Sharktopus Requirements
+
+Sharktopus will be a Max OS X video playback application based on AVFoundation/AVKit. It supports a UDP connection allowing other local applications to connect to it. This connection allows other applications to control and query Sharktopus.
+
+## UI
+
+The UI can be the stock AVKit windows. It should have the controls pictured below.
+
+![Sharktopus UI](Sharktopus.png)
+
+## Configuring the UDP Port
+
+- Under _Preferences_, a user should be able to specify the UDP port that can be used to connect to the app.
+- This UDP port should be saved as a preference so it is preserved and restored if an application is shut down and restarted.
+
+## Commands Accepted via the UDP port
+
+Sharktopus will receive JSON messages and respond with JSON via the UDP port configured under Preferences. It should support the following commands and corresponding functions:
+
+### Connect
+
+ Establishes a port number on the localhost that Sharktopus can send additional out-of-band messages to (outside of the UDP command -> response messages).
+
+```json
+{
+  "command": "connect",
+  "port": "8095"
+}
+```
+
+### Open
+
+Opens the specified video in a new window. The application should associate the URL and UUID with the window. (More on that later)
+
+__Open URL__
+
+```json
+{
+  "command": "open",
+  "url": "http://someurl/and/moviefile.mov",
+  "uuid": "b52cf7f1-e19c-40ba-b176-a7e479a3b170"
+}
+```
+
+__Open File (using file URL)__
+
+```json
+{
+  "command": "open",
+  "url": "file://somefileurl/and/moviefile.mp4",
+  "uuid": "b52cf7f1-e19c-40ba-b176-a7e479a3b170"
+}
+```
+
+It should respond with:
+
+__Successfully opened video response__
+
+```json
+{
+  "response": "open",
+  "status": "ok"
+}
+```
+
+__Failed to open video response__
+
+```json
+{
+  "response": "open",
+  "status": "failed"
+}
+```
+
+### Show
+
+Focuses the window containing the video with the given UUID
+
+```json
+{
+  "command": "show",
+  "uuid": "b52cf7f1-e19c-40ba-b176-a7e479a3b170"
+}
+```
+
+### Request Video Information (of the currently focused window)
+
+`{"command":"request video information"}`
+
+It should return the UUID and URL of the currently focused (or top most in z order)
+
+```json
+{
+  "response": "request video info",
+  "uuid": "b52cf7f1-e19c-40ba-b176-a7e479a3b170",
+  "url": "http://someurl/and/moviefile.mov"
+}
+```
+
+### Request information for all open videos
+
+`{"command": "request all information"}`
+
+It should return info for all open videos like the following:
+
+```json
+{
+  "response": "request all information",
+  "videos": [
+    {
+      "uuid": "b52cf7f1-e19c-40ba-b176-a7e479a3b170",
+      "url": "http://someurl/and/moviefile.mov"
+    },
+    {
+      "uuid": "b52cf7f1-e19c-40ba-b176-a7e479a3b170",
+      "url": "file://sometoherurl/and/moviefile.mp4"
+    }
+  ]
+}
+```
+
+### Play
+
+Play the video associated with the UUID
+
+```json
+{
+  "command": "play",
+  "uuid": "b52cf7f1-e19c-40ba-b176-a7e479a3b170"
+}
+```
+
+### Pause
+
+Pauses the playback for the video specified by the UUID
+
+```json
+{
+  "command": "pause",
+  "uuid": "b52cf7f1-e19c-40ba-b176-a7e479a3b170"
+}
+```
+
+### Request elapsed time
+
+Return the elapsed time (from the start) of the video as milliseconds.
+
+```json
+{
+  "command": "request elapsed time",
+  "uuid": "b52cf7f1-e19c-40ba-b176-a7e479a3b170"
+}
+```
+
+It should respond with:
+
+```json
+{
+  "response": "request elapsed time",
+  "uuid": "b52cf7f1-e19c-40ba-b176-a7e479a3b170",
+  "elapsed_time_millis": "12345"
+}
+```
+
+### Request Status
+
+Return the current playback status of the video (by UUID). Possible responses include: _shuttling forward_, _shuttling reverse_, _paused_, _playing_, _not found_.
+
+`{"command": "request status"}`
+
+A response is:
+
+```json
+{"response": "request status", "uuid": "b52cf7f1-e19c-40ba-b176-a7e479a3b170", "status": "playing"}
+```
+
+### Seek Elapsed Time
+
+See to the provided elapsed time (which will be in milliseconds)
+
+```json
+{
+  "command": "seek elapsed time",
+  "uuid": "b52cf7f1-e19c-40ba-b176-a7e479a3b170",
+  "elapsed_time_millis": "12345"
+}
+```
+
+### Framecapture
+
+Sharktopus should immediatly grab the current frame from the video along with the elapsed time of that frame. THe image should be saved (in a separate non-blocking thread. I think this is the default in AVFoundation). This action should not interfere with video playback.
+
+```json
+{
+  "command": "framecapture",
+  "uuid": "b52cf7f1-e19c-40ba-b176-a7e479a3b170",
+  "image_location": "/Some/path/to/save/image.png",
+  "image_reference_uuid": "aa4cf7f1-e19c-40ba-b176-a7e479a3cdef"
+}
+```
+
+When the image has been written to disk it should respond via the port specified in the _connect_ command with:
+
+```json
+{
+  "response": "framecapture",
+  "elapsed_time_millis": "12345",
+  "image_reference_uuid": "aa4cf7f1-e19c-40ba-b176-a7e479a3cdef",
+  "image_location": "/Some/path/to/save/image.png",
+  "status": "ok"
+}
+```
+
+The _status_ field should be `"failed"` if Sharktopus is unable to capture and write the image to disk.
