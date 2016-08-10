@@ -3,9 +3,11 @@
 
 Sharktopus will be a Max OS X video playback application based on AVFoundation/AVKit. It supports a UDP connection allowing other local applications to connect to it. This connection allows other applications to control and query Sharktopus.
 
+Sharktopus will display videos (either local files or remote URL's) in windows just like Apples' QuickTime app does. Each window will have an associated UUID (more about that below). Sharktopus can route control/query commands to the appropriate video window with this UUID.
+
 ## UI
 
-The UI can be the stock AVKit windows. It should have the controls pictured below.
+The UI can be the stock AVKit windows. It should have the controls pictured below. The window should be able to be resized. The ability to make a video window full-screen is not required.
 
 ![Sharktopus UI](Sharktopus.png)
 
@@ -84,7 +86,7 @@ Focuses the window containing the video with the given UUID
 }
 ```
 
-### Request Video Information (of the currently focused window)
+### Request Video Information for a Specific Window
 
 `{"command":"request video information"}`
 
@@ -92,7 +94,7 @@ It should return the UUID and URL of the currently focused (or top most in z ord
 
 ```json
 {
-  "response": "request video info",
+  "response": "request video information",
   "uuid": "b52cf7f1-e19c-40ba-b176-a7e479a3b170",
   "url": "http://someurl/and/moviefile.mov"
 }
@@ -122,12 +124,22 @@ It should return info for all open videos like the following:
 
 ### Play
 
-Play the video associated with the UUID
+Play the video associated with the UUID. The play rate will be 1.0
 
 ```json
 {
   "command": "play",
   "uuid": "b52cf7f1-e19c-40ba-b176-a7e479a3b170"
+}
+```
+
+Optionally the play command can contain a rate for the playback. A positive rate is forward, negative is reverse.
+
+```json
+{
+  "command": "play",
+  "uuid": "b52cf7f1-e19c-40ba-b176-a7e479a3b170",
+  "rate": "-2.4"
 }
 ```
 
