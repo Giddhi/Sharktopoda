@@ -1,8 +1,8 @@
 ![MBARI logo](https://raw.githubusercontent.com/underwatervideo/vampire-squid/master/src/site/images/logo-mbari-3b.png)
 
-# Sharktopus
+# Sharktopoda
 
-![Sharktopus](https://raw.githubusercontent.com/underwatervideo/Sharktopus/master/Sharktopus_2.png)
+![Sharktopoda](https://raw.githubusercontent.com/underwatervideo/Sharktopoda/master/Sharktopus_2.png)
 
 
 Native video playback application for Mac OS X. Provides remote interface for integration with other apps.
