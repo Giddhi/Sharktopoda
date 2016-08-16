@@ -1,9 +1,9 @@
 
-# Sharktopus Requirements
+# Sharktopoda Requirements
 
-Sharktopus will be a Max OS X video playback application based on AVFoundation/AVKit. It supports a UDP connection allowing other local applications to connect to it. This connection allows other applications to control and query Sharktopus.
+Sharktopoda will be a Max OS X video playback application based on AVFoundation/AVKit. It supports a UDP connection allowing other local applications to connect to it. This connection allows other applications to control and query Sharktopoda.
 
-Sharktopus will display videos (either local files or remote URL's) in windows just like Apples' QuickTime app does. Each window will have an associated UUID (more about that below). Sharktopus can route control/query commands to the appropriate video window with this UUID.
+Sharktopoda will display videos (either local files or remote URL's) in windows just like Apples' QuickTime app does. Each window will have an associated UUID (more about that below). Sharktopoda can route control/query commands to the appropriate video window with this UUID.
 
 ## UI
 
@@ -18,7 +18,7 @@ The UI can be the stock AVKit windows. It should have the controls pictured belo
 
 ## Commands Accepted via the UDP port
 
-Sharktopus will receive JSON messages and respond with JSON via the UDP port configured under Preferences. It should support the following commands and corresponding functions:
+Sharktopoda will receive JSON messages and respond with JSON via the UDP port configured under Preferences. It should support the following commands and corresponding functions:
 
 ### Connect
 
@@ -201,7 +201,7 @@ See to the provided elapsed time (which will be in milliseconds)
 
 ### Framecapture
 
-Sharktopus should immediatly grab the current frame from the video along with the elapsed time of that frame. THe image should be saved (in a separate non-blocking thread. I think this is the default in AVFoundation). This action should not interfere with video playback.
+Sharktopoda should immediatly grab the current frame from the video along with the elapsed time of that frame. The image should be saved (in a separate non-blocking thread. I think this is the default in AVFoundation). This action should not interfere with video playback.
 
 ```json
 {
