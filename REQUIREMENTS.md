@@ -232,11 +232,11 @@ These are optional features but are not required.
 
 ### Frame advance
 
-Advance the video one frame. The UDP/JSON command is
+Advance the video one frame for the given video The UDP/JSON command is
 
 ```json
 {
-  "command": "frame advance"
+  "command": "frame advance",
   "uuid": "cb5cf7f1-e19c-40ba-b176-a7e479a3cdef"
 }
 ```
