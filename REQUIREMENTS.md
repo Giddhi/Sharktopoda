@@ -225,3 +225,18 @@ When the image has been written to disk it should respond via the port specified
 ```
 
 The _status_ field should be `"failed"` if Sharktopus is unable to capture and write the image to disk.
+
+## Nice to Haves
+
+These are optional features but are not required.
+
+### Frame advance
+
+Advance the video one frame. The UDP/JSON command is
+
+```json
+{
+  "command": "frame advance"
+  "uuid": "cb5cf7f1-e19c-40ba-b176-a7e479a3cdef"
+}
+```
