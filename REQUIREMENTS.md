@@ -24,7 +24,7 @@ Sharktopoda will receive JSON messages and respond with JSON via the UDP port co
 
  Establishes a remote host and port number that Sharktopus can send additional out-of-band messages to (outside of the UDP command -> response messages). There are 2 forms of this message. 
  
- ![Port Configuration](images/Port Configuration.png)
+ ![Port Configuration](docs/images/Port Configuration.png)
  
  The first form omits the "host" field; Sharktopoda assumes that the host is "localhost".
 
@@ -222,7 +222,7 @@ Seek to the provided elapsed time (which will be in milliseconds)
 
 Sharktopoda should immediately grab the current frame from the video along with the elapsed time of that frame. The image should be saved (in a separate non-blocking thread. I think this is the default in AVFoundation). This action should not interfere with video playback.
 
- ![Framecapture](images/Framecapture.png)
+ ![Framecapture](docs/images/Framecapture.png)
 
 ```json
 {
