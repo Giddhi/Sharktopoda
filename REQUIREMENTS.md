@@ -40,7 +40,7 @@ The second form explicitly specifies the host:
 ```json
 {
   "command": "connect",
-  "port": "8095"
+  "port": "8095",
   "host": "some.server.org"
 }
 ```
