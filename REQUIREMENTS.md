@@ -22,12 +22,26 @@ Sharktopoda will receive JSON messages and respond with JSON via the UDP port co
 
 ### Connect
 
- Establishes a port number on the localhost that Sharktopus can send additional out-of-band messages to (outside of the UDP command -> response messages).
+ Establishes a remote host and port number that Sharktopus can send additional out-of-band messages to (outside of the UDP command -> response messages). There are 2 forms of this message. 
+ 
+ ![Port Configuration](images/Port Configuration.png)
+ 
+ The first form omits the "host" field; Sharktopoda assumes that the host is "localhost".
 
 ```json
 {
   "command": "connect",
   "port": "8095"
+}
+```
+
+The second form explicitly specifies the host:
+
+```json
+{
+  "command": "connect",
+  "port": "8095"
+  "host": "some.server.org"
 }
 ```
 
@@ -179,6 +193,11 @@ It should respond with:
 
 Return the current playback status of the video (by UUID). Possible responses include: _shuttling forward_, _shuttling reverse_, _paused_, _playing_, _not found_.
 
+- _playing_ is when the video is playing at a rate of 1.0
+- _shuttling forward_ is when the video is playing with a positive rate that is not equal to 1.0
+- _shuttling reverse_ is when the video is playing with a negative rate.
+- _paused_ is obvious. (Not playing)
+
 `{"command": "request status"}`
 
 A response is:
@@ -189,7 +208,7 @@ A response is:
 
 ### Seek Elapsed Time
 
-See to the provided elapsed time (which will be in milliseconds)
+Seek to the provided elapsed time (which will be in milliseconds)
 
 ```json
 {
@@ -201,7 +220,9 @@ See to the provided elapsed time (which will be in milliseconds)
 
 ### Framecapture
 
-Sharktopoda should immediatly grab the current frame from the video along with the elapsed time of that frame. The image should be saved (in a separate non-blocking thread. I think this is the default in AVFoundation). This action should not interfere with video playback.
+Sharktopoda should immediately grab the current frame from the video along with the elapsed time of that frame. The image should be saved (in a separate non-blocking thread. I think this is the default in AVFoundation). This action should not interfere with video playback.
+
+ ![Framecapture](images/Framecapture.png)
 
 ```json
 {
@@ -212,7 +233,7 @@ Sharktopoda should immediatly grab the current frame from the video along with t
 }
 ```
 
-When the image has been written to disk it should respond via the port specified in the _connect_ command with:
+When the image has been written to disk it should respond via the remote UDP port specified in the _connect_ command with:
 
 ```json
 {
